@@ -1,0 +1,33 @@
+// estado.js — variáveis globais e configuração de posições
+
+    let agenda = JSON.parse(localStorage.getItem('agenda_operacional_data')) || [];
+    let idItemEditando = null;
+    let cachePrecos = {};
+    let cachePrecosOpcoes = {};
+    let totaisLoop = null;
+
+    // ===== MOEDA DE EXIBIÇÃO =====
+    // Moeda em que os valores agregados são mostrados na tela (não altera o que
+    // está gravado — a Agenda continua sempre guardada internamente em USD/EUR
+    // conforme a origem). 'USD' | 'EUR' | 'BRL'.
+    let moedaExibicao = localStorage.getItem('agenda_moeda_exibicao') || 'USD';
+    // Cache das taxas de câmbio ao vivo (Yahoo Finance), partilhado por toda a app.
+    let taxasCambio = { EURUSD: null, USDBRL: null };
+
+    // ===== CONFIG: POSIÇÕES CONSOLIDADAS (IBKR + TASTYTRADE) =====
+    // Edite aqui sempre que abrir/fechar/rolar uma posição. "acoes" = posições compradas (long).
+    // "opcoesVendidas" = calls/puts vendidas (short) que estão retendo capital/garantia.
+    // tipo: 'C' para CALL, 'P' para PUT. vencimento no formato AAAA-MM-DD.
+    const POSICOES_CONSOLIDADAS = {
+        acoes: [
+            { ticker: 'SABR', qtd: 200 },
+            { ticker: 'BEEM', qtd: 200 },
+            { ticker: 'SNDL', qtd: 400 }
+        ],
+        opcoesVendidas: [
+            { ticker: 'BEEM', strike: 1.5,  tipo: 'C', vencimento: '2026-08-21', contratos: 2 },
+            { ticker: 'SABR', strike: 2,    tipo: 'C', vencimento: '2026-08-21', contratos: 2 },
+            { ticker: 'SNDL', strike: 1.5,  tipo: 'C', vencimento: '2026-08-21', contratos: 4 },
+            { ticker: 'F',    strike: 13.5, tipo: 'P', vencimento: '2026-08-14', contratos: 2 }
+        ]
+    };
