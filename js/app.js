@@ -5,12 +5,20 @@
         document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('aba-' + aba).classList.add('active');
-        const idx = ['registo','carteira','historico','watchlist'].indexOf(aba);
+        const idx = ['menu','carteira','historico','watchlist'].indexOf(aba);
         document.querySelectorAll('.tab-btn')[idx].classList.add('active');
         const scrollArea = document.querySelector('.app-scroll');
         if (scrollArea) scrollArea.scrollTop = 0;
         if (aba === 'carteira') { desenharPizza(); calcularTotaisConsolidados(); renderizarRendaFixa(); }
         if (aba === 'watchlist') { iniciarWatchlistLoop(); }
+    }
+
+    // ===== MODAL DE REGISTO (botão + do cabeçalho) =====
+    function abrirModalRegisto() {
+        document.getElementById('modalRegisto').classList.add('active');
+    }
+    function fecharModalRegisto() {
+        document.getElementById('modalRegisto').classList.remove('active');
     }
 
     // ===== ARRANQUE =====

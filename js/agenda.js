@@ -160,6 +160,7 @@
         trigBtn.innerHTML = '🎸 Instrumento';
 
         iniciarTickerLoop();
+        fecharModalRegisto();
     });
 
     // ===== EDIÇÃO =====
@@ -186,8 +187,8 @@
         document.getElementById('tituloFormulario').innerText = "✏️ Modo de Edição Ativo";
         document.getElementById('btnSubmitForm').innerText = "Atualizar Movimento";
         document.getElementById('btnSubmitForm').classList.add('btn-edit-mode');
-        mudarAba('registo');
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        abrirModalRegisto();
     }
 
     function excluirItem(idUnico) {
