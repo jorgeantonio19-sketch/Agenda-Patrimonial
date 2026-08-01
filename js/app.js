@@ -21,6 +21,14 @@
         document.getElementById('modalRegisto').classList.remove('active');
     }
 
+    // ===== MODAL DE GLOSSÁRIO (aba Menu) =====
+    function abrirModalGlossario() {
+        document.getElementById('modalGlossario').classList.add('active');
+    }
+    function fecharModalGlossario() {
+        document.getElementById('modalGlossario').classList.remove('active');
+    }
+
     // ===== ARRANQUE =====
     window.onclick = function(event) {
         if (!event.target.matches('.btn-instrumento-trigger') && !event.target.closest('.btn-instrumento-container')) {
