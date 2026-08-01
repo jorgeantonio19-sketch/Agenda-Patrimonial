@@ -1,4 +1,4 @@
-const CACHE_NAME = 'agenda-patrimonial-v11';
+const CACHE_NAME = 'agenda-patrimonial-v12';
 const ASSETS = [
   './',
   './index.html',
@@ -14,6 +14,7 @@ const ASSETS = [
   './js/agenda.js',
   './js/grafico.js',
   './js/backup.js',
+  './js/simulador.js',
   './js/app.js'
 ];
 

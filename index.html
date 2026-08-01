@@ -211,6 +211,78 @@
     </div><!-- fim modal-registo-content -->
     </div><!-- fim modalGlossario -->
 
+    <!-- MODAL: SIMULADOR DE PAYOFF — Fase 2 -->
+    <div class="modal-overlay" id="modalSimulador" onclick="if(event.target===this) fecharModalSimulador()">
+    <div class="modal-registo-content">
+        <div class="modal-registo-header">
+            <span>🧮 Simulador de Payoff</span>
+            <button type="button" class="modal-close" onclick="fecharModalSimulador()">✕</button>
+        </div>
+        <div class="modal-registo-body">
+
+            <div class="glossario-card" id="simCarregarCard" style="display:none;">
+                <div class="glossario-termo">📥 Carregar posição da Agenda</div>
+                <select id="simSelectAgenda" onchange="simCarregarDaAgenda(this.value)" style="margin-top:6px;">
+                    <option value="">— escolher uma opção já registada —</option>
+                </select>
+            </div>
+
+            <div class="section-card" style="padding:12px;">
+                <div class="moeda-selector">
+                    <button type="button" id="simTipoCALL" class="moeda-btn active" onclick="simSetTipo('CALL')">🐂 CALL</button>
+                    <button type="button" id="simTipoPUT" class="moeda-btn" onclick="simSetTipo('PUT')">🐻 PUT</button>
+                </div>
+                <div class="moeda-selector" style="margin-top:8px;">
+                    <button type="button" id="simDirCOMPRA" class="moeda-btn active" onclick="simSetDirecao('COMPRA')">Compra (Titular)</button>
+                    <button type="button" id="simDirVENDA" class="moeda-btn" onclick="simSetDirecao('VENDA')">Venda (Lançador)</button>
+                </div>
+            </div>
+
+            <div class="sim-slider-card">
+                <div class="sim-slider-label"><span>Strike (Preço de Exercício)</span><span class="sim-slider-valor" id="simStrikeValor">$ 10.00</span></div>
+                <input type="range" id="simStrike" min="0.5" max="200" step="0.05" value="10" oninput="simRecalcular()">
+            </div>
+            <div class="sim-slider-card">
+                <div class="sim-slider-label"><span>Prémio da Opção (por ação)</span><span class="sim-slider-valor" id="simPremioValor">$ 1.00</span></div>
+                <input type="range" id="simPremio" min="0.01" max="20" step="0.01" value="1" oninput="simRecalcular()">
+            </div>
+            <div class="sim-slider-card">
+                <div class="sim-slider-label"><span>Preço do Ativo (hoje)</span><span class="sim-slider-valor" id="simPrecoValor">$ 10.00</span></div>
+                <input type="range" id="simPreco" min="0.5" max="200" step="0.05" value="10" oninput="simRecalcular()">
+            </div>
+            <div class="sim-slider-card">
+                <div class="sim-slider-label"><span>Quantidade de Ações</span><span class="sim-slider-valor" id="simQtdValor">100</span></div>
+                <input type="range" id="simQtd" min="100" max="10000" step="100" value="100" oninput="simRecalcular()">
+            </div>
+
+            <div class="sim-resultados">
+                <div class="sim-resultado-box">
+                    <div class="sim-resultado-titulo">Classificação</div>
+                    <div class="sim-resultado-valor" id="simClassificacao">—</div>
+                </div>
+                <div class="sim-resultado-box">
+                    <div class="sim-resultado-titulo">Ponto de Equilíbrio</div>
+                    <div class="sim-resultado-valor" id="simEquilibrio">$ 0.00</div>
+                </div>
+                <div class="sim-resultado-box">
+                    <div class="sim-resultado-titulo" id="simPremioTotalLabel">Prémio Total Pago</div>
+                    <div class="sim-resultado-valor" id="simPremioTotal">$ 0.00</div>
+                </div>
+                <div class="sim-resultado-box">
+                    <div class="sim-resultado-titulo">Resultado no Preço Atual</div>
+                    <div class="sim-resultado-valor" id="simResultadoAtual">$ 0.00</div>
+                </div>
+            </div>
+
+            <div class="section-card" style="padding:12px; margin-top:4px;">
+                <canvas id="simCanvas" width="600" height="280" style="width:100%; height:auto; display:block;"></canvas>
+                <div style="color:#475569; font-size:10px; text-align:center; margin-top:6px;">Linha verde/vermelha = lucro/prejuízo no vencimento · tracejado ciano = preço atual · tracejado amarelo = strike</div>
+            </div>
+
+        </div>
+    </div><!-- fim modal-registo-content -->
+    </div><!-- fim modalSimulador -->
+
 
 
     <div class="app-scroll">
@@ -444,6 +516,10 @@
                     <span>📖 Glossário de Opções (Call/Put, ITM/OTM...)</span>
                     <span>›</span>
                 </button>
+                <button type="button" onclick="abrirModalSimulador()" class="btn-backup" style="width:100%; margin-top:8px; text-align:left; display:flex; align-items:center; justify-content:space-between;">
+                    <span>🧮 Simulador de Payoff</span>
+                    <span>›</span>
+                </button>
             </div>
             <div class="section-card" style="text-align:center;">
                 <div style="color:#94a3b8; font-size:12px;">© 2026 · <span id="footerNome">Jorge Costa</span> · Todos os direitos reservados</div>
@@ -474,6 +550,7 @@
 <script src="/js/agenda.js"></script>
 <script src="/js/grafico.js"></script>
 <script src="/js/backup.js"></script>
+<script src="/js/simulador.js"></script>
 <script src="/js/app.js"></script>
 </body>
 </html>

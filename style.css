@@ -7,7 +7,7 @@
             color: #f8fafc;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             padding-top: env(safe-area-inset-top, 12px);
-            padding-bottom: env(safe-area-inset-bottom, 8px);
+            padding-bottom: 0;
             padding-left: env(safe-area-inset-left, 8px);
             padding-right: env(safe-area-inset-right, 8px);
             display: flex; flex-direction: column; align-items: center;
@@ -20,7 +20,7 @@
             background-color: rgba(11, 19, 41, 0.85);
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(30, 41, 59, 0.7);
-            border-radius: 16px; padding: 12px;
+            border-radius: 16px 16px 0 0; padding: 12px;
             box-shadow: 0 20px 40px -15px rgba(0,0,0,0.7);
         }
         /* Única camada que rola de fato — tudo entre o cabeçalho e a barra de abas fixa embaixo */
@@ -66,13 +66,24 @@
         .glossario-card { background: rgba(15,23,42,0.7); border: 1px solid rgba(30,41,59,0.8); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; }
         .glossario-termo { color: #67e8f9; font-size: 12.5px; font-weight: 800; margin-bottom: 4px; }
         .glossario-def { color: #cbd5e1; font-size: 12.5px; line-height: 1.5; }
+
+        /* ===== SIMULADOR DE PAYOFF ===== */
+        .sim-slider-card { background: rgba(15,23,42,0.7); border: 1px solid rgba(30,41,59,0.8); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
+        .sim-slider-label { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; color: #94a3b8; font-weight: 700; margin-bottom: 8px; }
+        .sim-slider-valor { color: #67e8f9; font-size: 14px; font-weight: 800; }
+        input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 2px; background: #1e293b; outline: none; margin: 0; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #06b6d4; border: 3px solid #0b1329; box-shadow: 0 0 0 1px rgba(6,182,212,0.5); }
+        .sim-resultados { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+        .sim-resultado-box { background: rgba(15,23,42,0.7); border: 1px solid rgba(30,41,59,0.8); border-radius: 10px; padding: 10px; text-align: center; }
+        .sim-resultado-titulo { color: #64748b; font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+        .sim-resultado-valor { font-size: 16px; font-weight: 800; color: #f8fafc; margin-top: 4px; }
         h1 { color: #f59e0b; font-size: 20px; font-weight: 950; letter-spacing: 1px; text-transform: uppercase; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         .owner-zone { margin-top: 4px; display: inline-block; }
         .owner-name { color: #38bdf8; font-size: 12px; font-weight: 700; border-bottom: 1px dashed #38bdf8; cursor: pointer; padding: 2px 6px; border-radius: 4px; }
         p.subtitle { color: #94a3b8; font-size: 11px; margin-top: 4px; }
 
         /* ABAS — agora fixa embaixo da tela, como apps de corretora (IBKR, TradingView) */
-        .tabs-nav { flex-shrink: 0; display: flex; width: 100%; background-color: rgba(7,13,30,0.9); border-radius: 12px; padding: 4px; margin-top: 12px; gap: 4px; }
+        .tabs-nav { flex-shrink: 0; display: flex; width: calc(100% + 24px); background-color: rgba(7,13,30,0.95); border-radius: 12px 12px 0 0; padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 8px)) 8px; margin: 12px -12px -12px -12px; gap: 4px; border-top: 1px solid rgba(30,41,59,0.6); }
         .tab-btn { flex: 1; padding: 8px 4px; border: none; border-radius: 8px; background: transparent; color: #64748b; font-size: 11px; font-weight: 700; cursor: pointer; text-transform: uppercase; transition: all 0.2s ease; }
         .tab-btn.active { background-color: rgba(30,41,59,0.9); color: #f8fafc; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
         .tab-pane { display: none; }
