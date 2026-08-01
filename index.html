@@ -124,6 +124,94 @@
     </div><!-- fim modal-registo-content -->
     </div><!-- fim modalRegisto -->
 
+    <!-- MODAL: GLOSSÁRIO DE OPÇÕES — Fase 1 (teoria + minidicionário, estático) -->
+    <div class="modal-overlay" id="modalGlossario" onclick="if(event.target===this) fecharModalGlossario()">
+    <div class="modal-registo-content">
+        <div class="modal-registo-header">
+            <span>📖 Glossário de Opções</span>
+            <button type="button" class="modal-close" onclick="fecharModalGlossario()">✕</button>
+        </div>
+        <div class="modal-registo-body">
+
+            <div class="glossario-secao">🐂 CALL (Opção de Compra)</div>
+            <div class="glossario-card">
+                <div class="glossario-termo">Definição</div>
+                <div class="glossario-def">Contrato que dá ao comprador (Titular) o <b>direito</b> — mas não a obrigação — de comprar o ativo por um preço fixado (Strike) até o vencimento. Quem vende (Lançador) assume a <b>obrigação</b> de entregar o ativo se for exercido, recebendo o Prémio por isso.</div>
+            </div>
+            <div class="glossario-card">
+                <div class="glossario-termo">Compra de Call</div>
+                <div class="glossario-def">Usada quando se espera <b>alta</b> no preço do ativo. Risco limitado ao prémio pago; ganho potencialmente ilimitado.</div>
+            </div>
+            <div class="glossario-card">
+                <div class="glossario-termo">Venda de Call</div>
+                <div class="glossario-def">Recebe o prémio na hora. Se descoberta (sem possuir o ativo), o risco é ilimitado; o ganho máximo é o prémio recebido.</div>
+            </div>
+
+            <div class="glossario-secao">🐻 PUT (Opção de Venda)</div>
+            <div class="glossario-card">
+                <div class="glossario-termo">Definição</div>
+                <div class="glossario-def">Contrato que dá ao comprador o <b>direito</b> de vender o ativo pelo Strike até o vencimento. O vendedor assume a <b>obrigação</b> de comprar o ativo se for exercido.</div>
+            </div>
+            <div class="glossario-card">
+                <div class="glossario-termo">Compra de Put</div>
+                <div class="glossario-def">Usada quando se espera <b>queda</b> no preço, ou como proteção (hedge) de uma posição comprada no ativo. Risco limitado ao prémio pago.</div>
+            </div>
+            <div class="glossario-card">
+                <div class="glossario-termo">Venda de Put</div>
+                <div class="glossario-def">Recebe o prémio na hora, assumindo a obrigação de comprar o ativo pelo Strike se for exercido — comum pra quem não se importa de "ser exercido" e adquirir o ativo mais barato.</div>
+            </div>
+
+            <div class="glossario-secao">📘 Minidicionário</div>
+            <div class="glossario-card">
+                <div class="glossario-termo">Strike (Preço de Exercício)</div>
+                <div class="glossario-def">O preço fixado no contrato pelo qual o ativo pode ser comprado (Call) ou vendido (Put).</div>
+            </div>
+            <div class="glossario-card">
+                <div class="glossario-termo">Prémio</div>
+                <div class="glossario-def">Valor pago pelo comprador ao vendedor para adquirir o direito da opção.</div>
+            </div>
+            <div class="glossario-card">
+                <div class="glossario-termo">Lançador (Writer)</div>
+                <div class="glossario-def">Quem <b>vende</b> a opção. Recebe o prémio e assume a obrigação.</div>
+            </div>
+            <div class="glossario-card">
+                <div class="glossario-termo">Titular (Holder)</div>
+                <div class="glossario-def">Quem <b>compra</b> a opção. Paga o prémio e detém o direito.</div>
+            </div>
+            <div class="glossario-card">
+                <div class="glossario-termo">Vencimento</div>
+                <div class="glossario-def">Data limite após a qual o direito de exercício expira e a opção deixa de existir.</div>
+            </div>
+            <div class="glossario-card">
+                <div class="glossario-termo">ITM (In the Money / Dentro do Dinheiro)</div>
+                <div class="glossario-def">Tem valor intrínseco. Numa Call, preço atual acima do Strike; numa Put, abaixo.</div>
+            </div>
+            <div class="glossario-card">
+                <div class="glossario-termo">ATM (At the Money / No Dinheiro)</div>
+                <div class="glossario-def">Preço do ativo igual ou muito próximo do Strike.</div>
+            </div>
+            <div class="glossario-card">
+                <div class="glossario-termo">OTM (Out of the Money / Fora do Dinheiro)</div>
+                <div class="glossario-def">Sem valor intrínseco, só valor temporal. Numa Call, preço atual abaixo do Strike; numa Put, acima.</div>
+            </div>
+            <div class="glossario-card">
+                <div class="glossario-termo">Valor Intrínseco</div>
+                <div class="glossario-def">Diferença real entre o preço do ativo e o Strike, se a opção fosse exercida agora (só existe se ITM).</div>
+            </div>
+            <div class="glossario-card">
+                <div class="glossario-termo">Valor Temporal (Extrínseco)</div>
+                <div class="glossario-def">Parte do prémio ligada ao tempo restante até o vencimento e à chance de a opção se tornar lucrativa.</div>
+            </div>
+            <div class="glossario-card">
+                <div class="glossario-termo">Volatilidade Implícita</div>
+                <div class="glossario-def">Estimativa da oscilação futura do ativo embutida no preço da opção — quanto maior, mais caro tende a ser o prémio.</div>
+            </div>
+
+        </div>
+    </div><!-- fim modal-registo-content -->
+    </div><!-- fim modalGlossario -->
+
+
 
     <div class="app-scroll">
     <div class="tabs-content">
@@ -349,6 +437,13 @@
                     <button id="moedaBtnBRL" class="moeda-btn" onclick="selecionarMoeda('BRL')">R$ BRL</button>
                 </div>
                 <div style="color:#475569; font-size:10px; margin-top:6px;">Converte os valores totais da Agenda com câmbio ao vivo. Não altera o que já está gravado.</div>
+            </div>
+            <div class="section-card">
+                <label style="color:#94a3b8; font-size:11px; font-weight:700; text-transform:uppercase;">📚 Referência</label>
+                <button type="button" onclick="abrirModalGlossario()" class="btn-backup" style="width:100%; margin-top:8px; text-align:left; display:flex; align-items:center; justify-content:space-between;">
+                    <span>📖 Glossário de Opções (Call/Put, ITM/OTM...)</span>
+                    <span>›</span>
+                </button>
             </div>
             <div class="section-card" style="text-align:center;">
                 <div style="color:#94a3b8; font-size:12px;">© 2026 · <span id="footerNome">Jorge Costa</span> · Todos os direitos reservados</div>
