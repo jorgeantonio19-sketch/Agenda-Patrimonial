@@ -18,6 +18,7 @@
 <body>
 <div class="app-frame">
     <header>
+        <button type="button" class="btn-add-fab" onclick="abrirModalRegisto()" aria-label="Novo registo">+</button>
         <h1>📈 AGENDA PATRIMONIAL</h1>
         <div class="owner-zone">
             <span class="owner-name" id="nomeProprietario" onclick="alterarNomeDono()">CLIQUE PARA DIGITAR SEU NOME</span>
@@ -25,11 +26,14 @@
         <p class="subtitle">Controlo de PM, Rolagens e Posições da Carteira</p>
     </header>
 
-    <div class="app-scroll">
-    <div class="tabs-content">
-
-        <!-- ABA 1: REGISTO -->
-        <div class="tab-pane active" id="aba-registo">
+    <!-- MODAL: REGISTO — aberto pelo botão + do cabeçalho, fecha ao tocar fora ou no X -->
+    <div class="modal-overlay" id="modalRegisto" onclick="if(event.target===this) fecharModalRegisto()">
+    <div class="modal-registo-content">
+        <div class="modal-registo-header">
+            <span>✍️ Registar Movimento</span>
+            <button type="button" class="modal-close" onclick="fecharModalRegisto()">✕</button>
+        </div>
+        <div class="modal-registo-body" id="aba-registo">
 
             <!-- BOTÃO INSTRUMENTO -->
             <div class="btn-instrumento-container">
@@ -117,9 +121,15 @@
                 </form>
             </div>
         </div>
+    </div><!-- fim modal-registo-content -->
+    </div><!-- fim modalRegisto -->
+
+
+    <div class="app-scroll">
+    <div class="tabs-content">
 
         <!-- ABA 2: CARTEIRA -->
-        <div class="tab-pane" id="aba-carteira">
+        <div class="tab-pane active" id="aba-carteira">
             <div class="section-card" style="padding: 10px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
                     <div style="flex-grow: 1;">
@@ -318,15 +328,6 @@
         <!-- ABA 4: WATCHLIST -->
         <div class="tab-pane" id="aba-watchlist">
             <div class="section-card">
-                <label style="color:#94a3b8; font-size:11px; font-weight:700; text-transform:uppercase;">💱 Moeda de Exibição</label>
-                <div class="moeda-selector" style="margin-top:8px;">
-                    <button id="moedaBtnUSD" class="moeda-btn" onclick="selecionarMoeda('USD')">$ USD</button>
-                    <button id="moedaBtnEUR" class="moeda-btn" onclick="selecionarMoeda('EUR')">€ EUR</button>
-                    <button id="moedaBtnBRL" class="moeda-btn" onclick="selecionarMoeda('BRL')">R$ BRL</button>
-                </div>
-                <div style="color:#475569; font-size:10px; margin-top:6px;">Converte os valores totais da Agenda com câmbio ao vivo. Não altera o que já está gravado.</div>
-            </div>
-            <div class="section-card">
                 <label style="color:#94a3b8; font-size:11px; font-weight:700; text-transform:uppercase;">➕ Adicionar Ticker</label>
                 <div class="wl-add-row" style="margin-top:8px;">
                     <input type="text" id="wlNovoTicker" placeholder="Ex: AAPL, TSLA, MSFT" style="text-transform:uppercase;" onkeydown="if(event.key==='Enter'){adicionarTickerWatchlist();}">
@@ -338,22 +339,35 @@
             </div>
         </div>
 
-    </div><!-- fim tabs-content -->
+        <!-- ABA: MENU -->
+        <div class="tab-pane" id="aba-menu">
+            <div class="section-card">
+                <label style="color:#94a3b8; font-size:11px; font-weight:700; text-transform:uppercase;">💱 Moeda de Exibição</label>
+                <div class="moeda-selector" style="margin-top:8px;">
+                    <button id="moedaBtnUSD" class="moeda-btn" onclick="selecionarMoeda('USD')">$ USD</button>
+                    <button id="moedaBtnEUR" class="moeda-btn" onclick="selecionarMoeda('EUR')">€ EUR</button>
+                    <button id="moedaBtnBRL" class="moeda-btn" onclick="selecionarMoeda('BRL')">R$ BRL</button>
+                </div>
+                <div style="color:#475569; font-size:10px; margin-top:6px;">Converte os valores totais da Agenda com câmbio ao vivo. Não altera o que já está gravado.</div>
+            </div>
+            <div class="section-card" style="text-align:center;">
+                <div style="color:#94a3b8; font-size:12px;">© 2026 · <span id="footerNome">Jorge Costa</span> · Todos os direitos reservados</div>
+                <button onclick="restaurarBackupOculto()" class="btn-emergency" style="margin-top:10px;">🛠️ Restaurar Emergência</button>
+            </div>
+        </div>
 
-    <footer>
-        © 2026 · <span id="footerNome">Jorge Costa</span> · Todos os direitos reservados <br>
-        <button onclick="restaurarBackupOculto()" class="btn-emergency">🛠️ Restaurar Emergência</button>
-    </footer>
+    </div><!-- fim tabs-content -->
     </div><!-- fim app-scroll -->
 
     <!-- ABAS — fixa embaixo -->
     <nav class="tabs-nav">
-        <button class="tab-btn active" onclick="mudarAba('registo')">✍️ Registo</button>
-        <button class="tab-btn" onclick="mudarAba('carteira')">📊 Carteira</button>
+        <button class="tab-btn" onclick="mudarAba('menu')">☰ Menu</button>
+        <button class="tab-btn active" onclick="mudarAba('carteira')">📊 Carteira</button>
         <button class="tab-btn" onclick="mudarAba('historico')">📋 Histórico</button>
         <button class="tab-btn" onclick="mudarAba('watchlist')">👁️ Watch</button>
     </nav>
 </div>
+
 
 
 <script src="/js/estado.js"></script>
