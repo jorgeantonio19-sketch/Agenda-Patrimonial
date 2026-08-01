@@ -81,7 +81,11 @@ agenda-patrimonial/
 9. **backup.js** — exportar CSV, exportar/copiar backup em texto, importar
    backup, imprimir histórico, limpar todos os dados e restaurar backup
    automático de segurança.
-10. **app.js** — navegação entre abas (`mudarAba`) e o código de arranque
+10. **simulador.js** — Simulador de Payoff (modal acessível pela aba Menu):
+    sliders de Strike/Prémio/Preço/Quantidade, cálculo de ITM/ATM/OTM, ponto
+    de equilíbrio e resultado, gráfico de payoff em canvas, e opção de
+    carregar uma posição já registada na Agenda como ponto de partida.
+11. **app.js** — navegação entre abas (`mudarAba`) e o código de arranque
     da app (regista o Service Worker, carrega dados iniciais, arranca os
     loops de preços/totais). **Tem de ser sempre o último `<script>` a
     carregar**, porque corre assim que a página abre e depende de todas as
@@ -186,3 +190,40 @@ que eu identifico o módulo certo a mexer.
 - `js/agenda.js`: editar um item da tabela agora chama `abrirModalRegisto()`
   em vez de trocar de aba; salvar com sucesso fecha o modal automaticamente.
 - `sw.js` → `CACHE_NAME = 'agenda-patrimonial-v10'`.
+
+### 2026-08-01 — Glossário de Opções (Fase 1)
+- Novo cartão "📚 Referência" na aba Menu com botão **Glossário de Opções**
+  (modal): teoria de Call/Put (definição, compra, venda) + minidicionário
+  (Strike, Prémio, Lançador, Titular, Vencimento, ITM/ATM/OTM, Valor
+  Intrínseco/Temporal, Volatilidade Implícita). Conteúdo estático, sem
+  interatividade — inspirado num app de simulador de opções visto no Google
+  AI Studio.
+- `body.html`: `<div class="modal-overlay" id="modalGlossario">`.
+- `js/app.js`: `abrirModalGlossario()` / `fecharModalGlossario()`.
+- `sw.js` → `CACHE_NAME = 'agenda-patrimonial-v11'`.
+
+### 2026-08-01 (correção definitiva) — Espaço sobrando embaixo
+- Causa raiz: o `body` reservava `padding-bottom: env(safe-area-inset-bottom)`
+  como margem de segurança, empurrando o cartão inteiro pra cima e sobrando
+  fundo visível abaixo dele.
+- Removido esse padding do `body`; agora é a própria `.tabs-nav` que "sangra"
+  até a borda física da tela (margem negativa cancelando o padding do
+  `.app-frame`) e absorve a área de segurança com padding interno próprio.
+  `.app-frame` e `.tabs-nav` ficaram com cantos retos embaixo (só arredondados
+  no topo), já que agora tocam a borda real da tela.
+
+### 2026-08-01 — Simulador de Payoff (Fase 2)
+- Novo módulo **`js/simulador.js`** e modal `modalSimulador`, acessível pela
+  aba Menu junto do Glossário.
+- Sliders pra Strike, Prémio, Preço do Ativo e Quantidade; toggles de
+  Tipo (CALL/PUT) e Direção (Compra/Venda).
+- Calcula ao vivo: Classificação (ITM/ATM/OTM), Ponto de Equilíbrio, Prémio
+  Total (pago ou recebido, conforme a direção) e Resultado no Preço Atual.
+- Gráfico de payoff desenhado em `<canvas>` (sem lib externa, mesmo estilo do
+  gráfico de pizza): curva colorida verde/vermelho por lucro/prejuízo,
+  tracejado amarelo no strike, tracejado ciano no preço atual.
+- **Carregar posição da Agenda**: se já existir alguma opção registada, um
+  seletor no topo do modal deixa escolher uma e pré-preenche os sliders com
+  os valores reais (strike = preço gravado, prémio calculado a partir do
+  valor total ÷ quantidade).
+- `sw.js` → `CACHE_NAME = 'agenda-patrimonial-v12'`.
