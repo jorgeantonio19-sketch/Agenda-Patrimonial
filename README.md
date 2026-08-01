@@ -134,3 +134,55 @@ que eu identifico o módulo certo a mexer.
   câmbio em vez de buscar as taxas de novo — evita pedidos duplicados à
   Yahoo.
 - `sw.js` → `CACHE_NAME = 'agenda-patrimonial-v6'`.
+
+### 2026-07-30 — Abas embaixo, scroll travado e "atualizado há Xs"
+- **Barra de abas movida para baixo da tela** (Registo/Carteira/Histórico/Watch),
+  como em apps de corretora (Interactive Brokers, TradingView). Fica sempre
+  visível, ao alcance do polegar.
+- **Estrutura fixa, sem "elástico" do iOS**: `html`/`body` agora travados
+  (`overflow: hidden`, altura 100%). Só uma camada rola de verdade — a nova
+  `.app-scroll` (contém as abas + rodapé). O cabeçalho fica sempre fixo no
+  topo e a nav sempre fixa embaixo; o fundo gradiente nunca "sai" atrás mais.
+  `body.html`: conteúdo das abas + `<footer>` movidos para dentro de
+  `<div class="app-scroll">`; `<nav class="tabs-nav">` movida pro fim do
+  `app-frame`. `js/app.js`: `mudarAba()` agora reseta `.app-scroll.scrollTop`
+  pra 0 ao trocar de aba.
+- **Selo "🕒 atualizado há Xs" na Watchlist**: cada ticker mostra a idade do
+  preço mostrado, pra ficar óbvio quando um valor está desatualizado (foi o
+  que motivou isso — Ford aparecia com 5% de diferença do TradingView).
+  `js/watchlist.js`: nova função `tempoDecorrido()`, novo `atualizarSelosWatchlist()`
+  (loop leve de 5s que só atualiza o texto, sem buscar preço de novo).
+- `sw.js` → `CACHE_NAME = 'agenda-patrimonial-v7'`.
+
+### 2026-07-30 (correção) — Tela não preenchia a altura no iOS
+- O `height: -webkit-fill-available` usado pra travar `html`/`body` tem um bug
+  conhecido do iOS Safari: dentro de elemento `flex` (o `.app-frame`), ele
+  encolhe pro tamanho do conteúdo em vez de preencher a tela — sobrava espaço
+  preto embaixo da nav em abas com pouco conteúdo (ex: Watch com 1 ticker).
+- Trocado por `100dvh` (altura dinâmica de viewport), sem esse bug.
+- `sw.js` → `CACHE_NAME = 'agenda-patrimonial-v8'`.
+
+### 2026-07-30 (correção 2) — Conteúdo arrastava pros lados
+- O `.app-scroll` só travava o eixo vertical (`overflow-y`); o eixo horizontal
+  ficou destravado (antes essa trava vinha do `body`, que passou a não ser
+  mais quem contém o conteúdo visível). Resultado: dava pra arrastar a tela
+  pros lados e cortava o formulário.
+- Adicionado `overflow-x: hidden` ao `.app-scroll`.
+- `sw.js` → `CACHE_NAME = 'agenda-patrimonial-v9'`.
+
+### 2026-07-30 — Registo virou modal, botão + no topo, nova aba Menu
+- **Botão + no cabeçalho** (canto superior direito, estilo TradingView) abre o
+  formulário de Registo como **modal bottom-sheet** por cima da aba atual —
+  não navega mais pra lugar nenhum, some ao gravar ou tocar fora/no ✕.
+- **Nav de baixo mudou**: era Registo/Carteira/Histórico/Watch, agora é
+  **Menu/Carteira/Histórico/Watch**. Carteira é a aba padrão ao abrir a app.
+- **Nova aba Menu**: leva o seletor de moeda (USD/EUR/BRL, antes na Watch) +
+  o rodapé (nome, Restaurar Emergência).
+- `body.html`: bloco do formulário de Registo movido pra dentro de
+  `<div class="modal-overlay" id="modalRegisto">`; `<footer>` removido,
+  conteúdo migrado pra dentro da nova `<div id="aba-menu">`.
+- `js/app.js`: `mudarAba()` agora usa a lista `['menu','carteira','historico','watchlist']`;
+  novas funções `abrirModalRegisto()` / `fecharModalRegisto()`.
+- `js/agenda.js`: editar um item da tabela agora chama `abrirModalRegisto()`
+  em vez de trocar de aba; salvar com sucesso fecha o modal automaticamente.
+- `sw.js` → `CACHE_NAME = 'agenda-patrimonial-v10'`.
