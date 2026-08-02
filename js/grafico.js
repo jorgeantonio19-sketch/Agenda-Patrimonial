@@ -37,7 +37,7 @@
             POSICOES_CONSOLIDADAS.acoes.forEach(pos => {
                 const dp = cachePrecos[pos.ticker];
                 if (dp && dp.preco) {
-                    const valor = dp.preco * pos.qtd;
+                    const valor = converterParaUSD(dp.preco * pos.qtd, pos.moeda || 'USD');
                     if (valor > 0) dados.push({ nome: pos.ticker, valor });
                 }
             });

@@ -99,7 +99,7 @@
         let falhaAcao = false;
         POSICOES_CONSOLIDADAS.acoes.forEach((pos, i) => {
             const dados = resultadosAcoes[i];
-            if (dados && dados.preco) valorAplicado += dados.preco * pos.qtd;
+            if (dados && dados.preco) valorAplicado += converterParaUSD(dados.preco * pos.qtd, pos.moeda || 'USD');
             else falhaAcao = true;
         });
 

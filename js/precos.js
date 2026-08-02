@@ -122,6 +122,15 @@
         return '$';
     }
 
+    // Converte um valor bruto (número, não formatado) de moedaOrigem pra USD.
+    // Usado antes de SOMAR posições em moedas diferentes (ex: ações USD + B3 em BRL)
+    // — nunca dá pra somar números brutos de moedas diferentes direto.
+    function converterParaUSD(valor, moedaOrigem) {
+        if (moedaOrigem === 'EUR' && taxasCambio.EURUSD) return valor * taxasCambio.EURUSD;
+        if (moedaOrigem === 'BRL' && taxasCambio.USDBRL) return valor / taxasCambio.USDBRL;
+        return valor;
+    }
+
     // Converte um valor de moedaOrigem ('USD'|'EUR') para a moeda atualmente
     // selecionada (moedaExibicao) e devolve já formatado com símbolo.
     // Se a taxa ainda não chegou (app acabou de abrir), cai para USD como fallback.

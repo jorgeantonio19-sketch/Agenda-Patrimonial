@@ -18,11 +18,14 @@
     // Edite aqui sempre que abrir/fechar/rolar uma posição. "acoes" = posições compradas (long).
     // "opcoesVendidas" = calls/puts vendidas (short) que estão retendo capital/garantia.
     // tipo: 'C' para CALL, 'P' para PUT. vencimento no formato AAAA-MM-DD.
+    // moeda: 'USD' (padrão, pode omitir) | 'BRL' (ativos da B3, ex: PETR4.SA) | 'EUR'.
     const POSICOES_CONSOLIDADAS = {
         acoes: [
             { ticker: 'SABR', qtd: 200 },
             { ticker: 'BEEM', qtd: 200 },
-            { ticker: 'SNDL', qtd: 400 }
+            { ticker: 'SNDL', qtd: 400 },
+            { ticker: 'PETR4.SA', qtd: 100, moeda: 'BRL' },
+            { ticker: 'BBAS3.SA', qtd: 45, moeda: 'BRL' }
         ],
         opcoesVendidas: [
             { ticker: 'BEEM', strike: 1.5,  tipo: 'C', vencimento: '2026-08-21', contratos: 2 },
