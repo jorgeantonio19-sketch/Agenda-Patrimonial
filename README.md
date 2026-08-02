@@ -287,3 +287,22 @@ que eu identifico o módulo certo a mexer.
   (`js/estado.js`) continua manual — é só editar a lista com o ticker,
   quantidade e `moeda: 'BRL'`.
 - `sw.js` → `CACHE_NAME = 'agenda-patrimonial-v15'`.
+
+### 2026-08-02 — Ações agora 100% automáticas (adicionar/editar/apagar reflete sozinho)
+- **Problema reportado**: apagar um ativo do Histórico não o tirava do
+  gráfico/totais, porque essa parte vinha de uma config manual separada.
+- **Resolvido pra Ações**: nova função `calcularAcoesDetidas()` em
+  `js/agenda.js` — soma `qtdEfeito` de todas as operações tipo `ACAO` por
+  ticker, em ordem cronológica, e devolve só quem ainda tem posição aberta
+  (qtd > 0), com a moeda certa. Roda toda vez que é chamada, então nunca
+  fica desatualizada.
+- `js/totais.js` e `js/grafico.js`: trocado `POSICOES_CONSOLIDADAS.acoes`
+  por `calcularAcoesDetidas()` — os totais e o gráfico agora refletem
+  automaticamente qualquer adição, edição ou exclusão no Histórico.
+- `js/estado.js`: `POSICOES_CONSOLIDADAS` perdeu a chave `acoes` (não existe
+  mais, não precisa editar nada ali pra ações). Ficou só `opcoesVendidas`.
+- **Opções vendidas continuam manuais por enquanto**: juntar
+  rolagens/fechamentos parciais por strike+vencimento automaticamente é mais
+  complexo (a Agenda registra cada movimento separado, não "contratos
+  abertos"); fica pra uma etapa futura se fizer sentido.
+- `sw.js` → `CACHE_NAME = 'agenda-patrimonial-v16'`.
