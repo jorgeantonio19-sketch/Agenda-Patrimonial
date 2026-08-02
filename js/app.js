@@ -5,7 +5,7 @@
         document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('aba-' + aba).classList.add('active');
-        const idx = ['menu','carteira','historico','watchlist'].indexOf(aba);
+        const idx = ['carteira','historico','watchlist','menu'].indexOf(aba);
         document.querySelectorAll('.tab-btn')[idx].classList.add('active');
         const scrollArea = document.querySelector('.app-scroll');
         if (scrollArea) scrollArea.scrollTop = 0;

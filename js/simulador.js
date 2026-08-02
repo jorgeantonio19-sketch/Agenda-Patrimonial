@@ -5,6 +5,27 @@
     let simTipo = 'CALL';
     let simDirecao = 'COMPRA';
 
+    // ===== CALCULADORA DE DISTÂNCIA (Menu) =====
+    function calcularDistanciaStrike() {
+        const preco = parseFloat(document.getElementById('calcPrecoAtual').value);
+        const strike = parseFloat(document.getElementById('calcStrike').value);
+        const elResultado = document.getElementById('calcResultado');
+        const elLabel = document.getElementById('calcResultadoLabel');
+        if (!preco || !strike || preco <= 0) {
+            elResultado.textContent = '—';
+            elResultado.style.color = '#67e8f9';
+            elLabel.textContent = '';
+            return;
+        }
+        const pct = ((strike - preco) / preco) * 100;
+        const sinal = pct >= 0 ? '+' : '';
+        elResultado.textContent = sinal + pct.toFixed(2) + '%';
+        elResultado.style.color = pct >= 0 ? '#34d399' : '#f87171';
+        elLabel.textContent = pct >= 0
+            ? 'o ativo precisa subir ' + Math.abs(pct).toFixed(2) + '% pra chegar no strike'
+            : 'o ativo precisa cair ' + Math.abs(pct).toFixed(2) + '% pra chegar no strike';
+    }
+
     function abrirModalSimulador() {
         // Popula o seletor "carregar da Agenda" com as opções já registadas
         const sel = document.getElementById('simSelectAgenda');
@@ -91,6 +112,24 @@
         elResultado.style.color = resultadoAtual >= 0 ? '#34d399' : '#f87171';
 
         simDesenharGrafico(strike, premio, preco, qtd);
+        simAtualizarExplicacao(strike, premio, equilibrio, premio * qtd);
+    }
+
+    function simAtualizarExplicacao(strike, premio, equilibrio, premioTotal) {
+        const K = '$' + strike.toFixed(2);
+        const EQ = '$' + equilibrio.toFixed(2);
+        const PR = '$' + premioTotal.toFixed(2);
+        let texto;
+        if (simTipo === 'CALL' && simDirecao === 'COMPRA') {
+            texto = `Se a ação terminar acima do ponto de equilíbrio (<b>${EQ}</b>), tu ficas com lucro — quanto mais subir, mais ganhas. Abaixo do strike (<b>${K}</b>), a opção "vira pó" e perdes o prémio pago (<b>${PR}</b>).`;
+        } else if (simTipo === 'CALL' && simDirecao === 'VENDA') {
+            texto = `Enquanto a ação ficar abaixo do strike (<b>${K}</b>), tu ficas com todo o prémio recebido (<b>${PR}</b>). Se passar do ponto de equilíbrio (<b>${EQ}</b>), a operação passa a dar prejuízo — e o risco de subida é ilimitado.`;
+        } else if (simTipo === 'PUT' && simDirecao === 'COMPRA') {
+            texto = `Se a ação terminar abaixo do ponto de equilíbrio (<b>${EQ}</b>), tu ficas com lucro — quanto mais cair, mais ganhas. Acima do strike (<b>${K}</b>), a opção "vira pó" e perdes o prémio pago (<b>${PR}</b>).`;
+        } else {
+            texto = `Enquanto a ação ficar acima do strike (<b>${K}</b>), tu ficas com todo o prémio recebido (<b>${PR}</b>). Se cair abaixo do ponto de equilíbrio (<b>${EQ}</b>), a operação passa a dar prejuízo.`;
+        }
+        document.getElementById('simExplicacao').innerHTML = texto;
     }
 
     function simDesenharGrafico(strike, premio, preco, qtd) {

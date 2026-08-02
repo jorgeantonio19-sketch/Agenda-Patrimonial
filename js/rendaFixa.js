@@ -48,8 +48,13 @@
 
     function fmtEUR(v) {
         // Capital da Renda Fixa é sempre guardado em EUR; converte pra moeda
-        // selecionada no seletor (Watchlist) na hora de exibir.
-        return formatarMoeda(v || 0, 'EUR');
+        // selecionada no seletor (Watchlist) na hora de exibir, mostrando o
+        // valor original em EUR entre parênteses pra não confundir.
+        v = v || 0;
+        const convertido = formatarMoeda(v, 'EUR');
+        if (moedaExibicao === 'EUR' || !taxasCambio.EURUSD) return convertido;
+        const original = '€' + v.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return convertido + ' (' + original + ')';
     }
 
     // Valor acumulado (capital + juros) de uma posição numa data específica, com juro composto diário
