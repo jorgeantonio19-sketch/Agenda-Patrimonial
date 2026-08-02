@@ -227,3 +227,22 @@ que eu identifico o módulo certo a mexer.
   os valores reais (strike = preço gravado, prémio calculado a partir do
   valor total ÷ quantidade).
 - `sw.js` → `CACHE_NAME = 'agenda-patrimonial-v12'`.
+
+### 2026-08-02 — 4 ajustes: Renda Fixa, calculadora, texto didático, Menu à direita
+1. **Renda Fixa mostra os dois valores**: como o capital é sempre guardado em
+   EUR, ao ver com o seletor noutra moeda o valor convertido agora vem
+   acompanhado do original entre parênteses — ex: `$3,209.12 (€2,784.00)`.
+   Não era bug de cálculo, só faltava deixar claro que era conversão.
+   `js/rendaFixa.js`: `fmtEUR()` ajustada.
+2. **Calculadora de Distância (Strike)** nova, na aba Menu: digita Preço
+   Atual e Strike, mostra a % de distância entre os dois (quanto o ativo
+   precisa subir/cair pra chegar no strike). `js/simulador.js`:
+   `calcularDistanciaStrike()`.
+3. **Texto explicativo no Simulador de Payoff**: abaixo do gráfico, uma frase
+   dinâmica conforme Call/Put e Compra/Venda explica em português simples o
+   que acontece acima/abaixo do ponto de equilíbrio. `js/simulador.js`:
+   `simAtualizarExplicacao()`.
+4. **Menu movido pro lado direito** da nav de baixo (era o primeiro botão,
+   agora é o último: Carteira, Histórico, Watch, Menu).
+   `js/app.js`: lista de `mudarAba()` reordenada.
+- `sw.js` → `CACHE_NAME = 'agenda-patrimonial-v13'`.

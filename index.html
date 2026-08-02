@@ -277,6 +277,7 @@
             <div class="section-card" style="padding:12px; margin-top:4px;">
                 <canvas id="simCanvas" width="600" height="280" style="width:100%; height:auto; display:block;"></canvas>
                 <div style="color:#475569; font-size:10px; text-align:center; margin-top:6px;">Linha verde/vermelha = lucro/prejuízo no vencimento · tracejado ciano = preço atual · tracejado amarelo = strike</div>
+                <div id="simExplicacao" class="sim-explicacao"></div>
             </div>
 
         </div>
@@ -511,6 +512,21 @@
                 <div style="color:#475569; font-size:10px; margin-top:6px;">Converte os valores totais da Agenda com câmbio ao vivo. Não altera o que já está gravado.</div>
             </div>
             <div class="section-card">
+                <label style="color:#94a3b8; font-size:11px; font-weight:700; text-transform:uppercase;">🎯 Calculadora de Distância (Strike)</label>
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                    <div style="flex:1;">
+                        <label style="font-size:10px; color:#64748b;">PREÇO ATUAL</label>
+                        <input type="number" id="calcPrecoAtual" placeholder="0.00" step="0.01" oninput="calcularDistanciaStrike()">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="font-size:10px; color:#64748b;">STRIKE</label>
+                        <input type="number" id="calcStrike" placeholder="0.00" step="0.01" oninput="calcularDistanciaStrike()">
+                    </div>
+                </div>
+                <div id="calcResultado" style="margin-top:10px; text-align:center; font-size:22px; font-weight:800; color:#67e8f9;">—</div>
+                <div id="calcResultadoLabel" style="text-align:center; font-size:11px; color:#64748b;"></div>
+            </div>
+            <div class="section-card">
                 <label style="color:#94a3b8; font-size:11px; font-weight:700; text-transform:uppercase;">📚 Referência</label>
                 <button type="button" onclick="abrirModalGlossario()" class="btn-backup" style="width:100%; margin-top:8px; text-align:left; display:flex; align-items:center; justify-content:space-between;">
                     <span>📖 Glossário de Opções (Call/Put, ITM/OTM...)</span>
@@ -532,10 +548,10 @@
 
     <!-- ABAS — fixa embaixo -->
     <nav class="tabs-nav">
-        <button class="tab-btn" onclick="mudarAba('menu')">☰ Menu</button>
         <button class="tab-btn active" onclick="mudarAba('carteira')">📊 Carteira</button>
         <button class="tab-btn" onclick="mudarAba('historico')">📋 Histórico</button>
         <button class="tab-btn" onclick="mudarAba('watchlist')">👁️ Watch</button>
+        <button class="tab-btn" onclick="mudarAba('menu')">☰ Menu</button>
     </nav>
 </div>
 
