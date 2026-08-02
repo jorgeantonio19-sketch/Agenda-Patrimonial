@@ -72,6 +72,14 @@
                         <label>Data Op.</label>
                         <input type="date" id="dataOp" required>
                     </div>
+                    <div class="form-row span-full">
+                        <label>Moeda da Operação</label>
+                        <div class="moeda-selector" style="margin-top:4px;">
+                            <button type="button" id="formMoedaUSD" class="moeda-btn active" onclick="formSetMoeda('USD')">$ USD</button>
+                            <button type="button" id="formMoedaEUR" class="moeda-btn" onclick="formSetMoeda('EUR')">€ EUR</button>
+                            <button type="button" id="formMoedaBRL" class="moeda-btn" onclick="formSetMoeda('BRL')">R$ BRL (B3)</button>
+                        </div>
+                    </div>
                     <div class="form-row" id="containerCallPut">
                         <label>Tipo Opção</label>
                         <select id="tipoOpcao" onchange="ajustarLabelsDinamicos()">

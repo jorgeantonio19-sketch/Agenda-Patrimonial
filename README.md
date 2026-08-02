@@ -246,3 +246,26 @@ que eu identifico o módulo certo a mexer.
    agora é o último: Carteira, Histórico, Watch, Menu).
    `js/app.js`: lista de `mudarAba()` reordenada.
 - `sw.js` → `CACHE_NAME = 'agenda-patrimonial-v13'`.
+
+### 2026-08-02 — Moeda por operação (preparação pra B3)
+- Novo seletor **Moeda da Operação (USD/EUR/BRL)** no formulário de Registo,
+  logo abaixo de Ativo/Data. Cada operação grava sua própria moeda (`moeda`
+  no objeto do item), permitindo registar ativos da B3 (ex: PETR4.SA) em
+  Real sem misturar com o resto da Agenda em dólar.
+- Itens antigos (sem o campo `moeda`) continuam a funcionar normalmente —
+  tratados como USD por padrão (`op.moeda || 'USD'`) em todo o código.
+- Tabela do Histórico/Registo: coluna Preço, PM e Valor Efeito agora mostram
+  o símbolo/conversão certos conforme a moeda de cada operação. P&L
+  realizado idem. Resumo "Total Aplicado" por ativo também usa a moeda
+  daquele ticker (todas as operações de um mesmo ticker são sempre na mesma
+  moeda, então não há mistura dentro do resumo por ativo).
+- `js/precos.js`: novo helper `simboloMoeda(m)` (símbolo puro, sem
+  converter — usado em preços por ação/PM); `formatarMoeda()` passou a
+  aceitar `'BRL'` como moeda de origem também (antes só USD/EUR).
+- `js/agenda.js`: `formSetMoeda()`, estado `formMoedaSelecionada`; gravar,
+  editar e o preview do prémio por ação respeitam a moeda escolhida.
+- **Pendente pra quando Jorge começar a operar na B3 de fato**: os cartões
+  de totais consolidados da Carteira (Ações/Opções/Geral) ainda somam a
+  partir de `POSICOES_CONSOLIDADAS` (config fixa em `estado.js`, separada da
+  Agenda) — precisa de ajuste manual nessa config quando houver posições
+  reais em BRL pra entrarem nos totais corretamente.
