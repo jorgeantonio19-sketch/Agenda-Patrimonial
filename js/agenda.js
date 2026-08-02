@@ -294,6 +294,30 @@
         alertaEl.style.display = 'block';
     }
 
+    // ===== POSIÇÕES DE AÇÕES — derivadas automaticamente do Histórico =====
+    // Substitui a antiga lista manual: soma qtdEfeito de todas as operações tipo
+    // AÇÃO por ticker, na ordem cronológica. Se der zero ou negativo, a posição
+    // já foi encerrada e não aparece. Roda de novo sempre que chamada — nunca
+    // fica desatualizada quando um item é adicionado, editado ou apagado.
+    function calcularAcoesDetidas() {
+        const posicoes = {};
+        const ordenada = [...agenda].sort((a, b) => {
+            const da = a.data.split('/').reverse().join('-');
+            const db = b.data.split('/').reverse().join('-');
+            if (da !== db) return da < db ? -1 : 1;
+            return a.id - b.id;
+        });
+        ordenada.forEach(op => {
+            if (op.instrumento !== 'ACAO') return;
+            if (!posicoes[op.ticker]) posicoes[op.ticker] = { qtd: 0, moeda: op.moeda || 'USD' };
+            posicoes[op.ticker].qtd += op.qtdEfeito;
+            posicoes[op.ticker].moeda = op.moeda || 'USD';
+        });
+        return Object.keys(posicoes)
+            .filter(t => posicoes[t].qtd > 0)
+            .map(t => ({ ticker: t, qtd: posicoes[t].qtd, moeda: posicoes[t].moeda }));
+    }
+
     // ===== PROCESSAR AGENDA =====
     function processarAgenda() {
         const filtro = document.getElementById('filtroAtivo').value || 'TODOS';

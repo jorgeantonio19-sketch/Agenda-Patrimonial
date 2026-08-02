@@ -89,15 +89,16 @@
 
         // Ações e Opções pedidas todas ao mesmo tempo (antes eram uma a uma, em fila —
         // com 7 posições isso podia significar 7x o tempo de espera de um único pedido).
+        const acoesAtuais = calcularAcoesDetidas();
         const [resultadosAcoes, resultadosOpcoes] = await Promise.all([
-            Promise.all(POSICOES_CONSOLIDADAS.acoes.map(pos => buscarPrecoYahoo(pos.ticker))),
+            Promise.all(acoesAtuais.map(pos => buscarPrecoYahoo(pos.ticker))),
             Promise.all(POSICOES_CONSOLIDADAS.opcoesVendidas.map(pos => buscarPrecoOpcaoYahoo(pos)))
         ]);
 
         // Valor Aplicado (Ações): quantidade x preço atual
         let valorAplicado = 0;
         let falhaAcao = false;
-        POSICOES_CONSOLIDADAS.acoes.forEach((pos, i) => {
+        acoesAtuais.forEach((pos, i) => {
             const dados = resultadosAcoes[i];
             if (dados && dados.preco) valorAplicado += converterParaUSD(dados.preco * pos.qtd, pos.moeda || 'USD');
             else falhaAcao = true;

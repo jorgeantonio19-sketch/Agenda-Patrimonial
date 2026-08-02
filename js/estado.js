@@ -15,18 +15,16 @@
     let taxasCambio = { EURUSD: null, USDBRL: null };
 
     // ===== CONFIG: POSIÇÕES CONSOLIDADAS (IBKR + TASTYTRADE) =====
-    // Edite aqui sempre que abrir/fechar/rolar uma posição. "acoes" = posições compradas (long).
-    // "opcoesVendidas" = calls/puts vendidas (short) que estão retendo capital/garantia.
+    // "acoes" agora é AUTOMÁTICO — calculado direto do Histórico da Agenda
+    // (função calcularAcoesDetidas() em agenda.js). Não precisa editar mais nada
+    // aqui quando comprar/vender ações: só registar no Registo normalmente.
+    //
+    // "opcoesVendidas" (calls/puts vendidas retendo capital/garantia) continua
+    // manual por enquanto — juntar rolagens/fechamentos parciais por strike e
+    // vencimento automaticamente é mais complexo, fica pra uma próxima etapa.
+    // Edite aqui sempre que abrir/fechar/rolar uma opção vendida.
     // tipo: 'C' para CALL, 'P' para PUT. vencimento no formato AAAA-MM-DD.
-    // moeda: 'USD' (padrão, pode omitir) | 'BRL' (ativos da B3, ex: PETR4.SA) | 'EUR'.
     const POSICOES_CONSOLIDADAS = {
-        acoes: [
-            { ticker: 'SABR', qtd: 200 },
-            { ticker: 'BEEM', qtd: 200 },
-            { ticker: 'SNDL', qtd: 400 },
-            { ticker: 'PETR4.SA', qtd: 100, moeda: 'BRL' },
-            { ticker: 'BBAS3.SA', qtd: 45, moeda: 'BRL' }
-        ],
         opcoesVendidas: [
             { ticker: 'BEEM', strike: 1.5,  tipo: 'C', vencimento: '2026-08-21', contratos: 2 },
             { ticker: 'SABR', strike: 2,    tipo: 'C', vencimento: '2026-08-21', contratos: 2 },

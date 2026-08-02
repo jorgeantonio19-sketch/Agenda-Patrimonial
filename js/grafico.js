@@ -27,14 +27,14 @@
         if (modoPizza === 'quantidade') {
             // Fatia pelo número de ações detidas em cada ticker; Renda Fixa entra como
             // fatia única, dimensionada pelo capital investido (não tem "quantidade de ações").
-            POSICOES_CONSOLIDADAS.acoes.forEach(pos => {
+            calcularAcoesDetidas().forEach(pos => {
                 if (pos.qtd > 0) dados.push({ nome: pos.ticker, valor: pos.qtd });
             });
             if (capitalRF > 0) dados.push({ nome: 'Renda Fixa', valor: capitalRF });
 
         } else if (modoPizza === 'dinheiro') {
             // Fatia pelo valor de mercado atual (preço em cache × quantidade) + Renda Fixa (capital total)
-            POSICOES_CONSOLIDADAS.acoes.forEach(pos => {
+            calcularAcoesDetidas().forEach(pos => {
                 const dp = cachePrecos[pos.ticker];
                 if (dp && dp.preco) {
                     const valor = converterParaUSD(dp.preco * pos.qtd, pos.moeda || 'USD');
