@@ -269,3 +269,21 @@ que eu identifico o módulo certo a mexer.
   partir de `POSICOES_CONSOLIDADAS` (config fixa em `estado.js`, separada da
   Agenda) — precisa de ajuste manual nessa config quando houver posições
   reais em BRL pra entrarem nos totais corretamente.
+
+### 2026-08-02 — Ativos da B3 no gráfico e nos totais
+- Causa do gráfico "não achar" PETR4.SA/BBAS3.SA: o gráfico de pizza e os
+  Totais Consolidados usam a config `POSICOES_CONSOLIDADAS` (editada à mão em
+  `estado.js`), separada dos lançamentos da Agenda — não é derivada
+  automaticamente do Histórico. Adicionadas as duas posições que já
+  apareciam no Histórico (`PETR4.SA` qtd 100, `BBAS3.SA` qtd 45, ambas
+  `moeda: 'BRL'`).
+- **Bug de verdade corrigido**: essas somas tratavam todo preço como se
+  fosse dólar — um ativo da B3 (preço em BRL) entraria direto na soma sem
+  converter, inflando o total. Agora cada posição é convertida pra USD antes
+  de somar (`converterParaUSD()`, novo helper em `js/precos.js`), usando o
+  campo `moeda` de cada posição (padrão USD se omitido).
+- **Lembrete pra Jorge**: ao abrir/fechar uma posição real na B3 (ou em
+  qualquer corretora fora da Agenda), a atualização em `POSICOES_CONSOLIDADAS`
+  (`js/estado.js`) continua manual — é só editar a lista com o ticker,
+  quantidade e `moeda: 'BRL'`.
+- `sw.js` → `CACHE_NAME = 'agenda-patrimonial-v15'`.

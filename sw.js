@@ -1,4 +1,4 @@
-const CACHE_NAME = 'agenda-patrimonial-v14';
+const CACHE_NAME = 'agenda-patrimonial-v15';
 const ASSETS = [
   './',
   './index.html',
