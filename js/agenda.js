@@ -1,5 +1,14 @@
 // agenda.js — núcleo: instrumento, formulário, gravar, editar, filtrar, P&L, processar
 
+    // ===== MOEDA DA OPERAÇÃO (formulário de Registo) =====
+    let formMoedaSelecionada = 'USD';
+    function formSetMoeda(m) {
+        formMoedaSelecionada = m;
+        ['USD','EUR','BRL'].forEach(k => {
+            document.getElementById('formMoeda' + k).classList.toggle('active', k === m);
+        });
+    }
+
     // ===== INSTRUMENTO =====
     function toggleInstrumentoPopup(event) {
         if (event) event.stopPropagation();
@@ -47,7 +56,7 @@
         const qtd = parseInt(document.getElementById('qtdAcoes').value) || 0;
         const fin = parseFloat(document.getElementById('valorFinanceiro').value) || 0;
         const box = document.getElementById('boxPremioUnitario');
-        box.innerText = (qtd > 0 && fin >= 0) ? `$${(fin/qtd).toFixed(2)} /ação` : `$0.00 /ação`;
+        box.innerText = (qtd > 0 && fin >= 0) ? `${simboloMoeda(formMoedaSelecionada)}${(fin/qtd).toFixed(2)} /ação` : `${simboloMoeda(formMoedaSelecionada)}0.00 /ação`;
     }
 
     // ===== CAMPOS DINÂMICOS =====
@@ -133,14 +142,14 @@
         if (idItemEditando !== null) {
             const idx = agenda.findIndex(i => i.id === idItemEditando);
             if (idx !== -1) {
-                agenda[idx] = { ...agenda[idx], ticker, data: dataFormatada, direcao, instrumento, tipoOpcao, preco, qtdOriginal: qtd, qtdEfeito, valorEfeito, precoMedioData, dataExercicio, premioFechamento };
+                agenda[idx] = { ...agenda[idx], ticker, data: dataFormatada, direcao, instrumento, tipoOpcao, preco, qtdOriginal: qtd, qtdEfeito, valorEfeito, precoMedioData, dataExercicio, premioFechamento, moeda: formMoedaSelecionada };
             }
             idItemEditando = null;
             document.getElementById('btnSubmitForm').innerText = "Gravar na Agenda";
             document.getElementById('btnSubmitForm').classList.remove('btn-edit-mode');
             document.getElementById('tituloFormulario').innerText = "✍️ Registar Movimento";
         } else {
-            agenda.push({ id: Date.now() + Math.floor(Math.random()*1000), ticker, data: dataFormatada, direcao, instrumento, tipoOpcao, preco, qtdOriginal: qtd, qtdEfeito, valorEfeito, precoMedioData, dataExercicio, premioFechamento });
+            agenda.push({ id: Date.now() + Math.floor(Math.random()*1000), ticker, data: dataFormatada, direcao, instrumento, tipoOpcao, preco, qtdOriginal: qtd, qtdEfeito, valorEfeito, precoMedioData, dataExercicio, premioFechamento, moeda: formMoedaSelecionada });
         }
 
         persistirDadosAgenda(agenda);
@@ -148,6 +157,7 @@
         atualizarListaFiltros();
         processarAgenda();
         document.getElementById('agendaForm').reset();
+        formSetMoeda('USD');
 
         // Data automática após reset
         document.getElementById('dataOp').value = new Date().toISOString().split('T')[0];
@@ -168,6 +178,7 @@
         const item = agenda.find(op => op.id === idUnico);
         if (!item) return;
         idItemEditando = item.id;
+        formSetMoeda(item.moeda || 'USD');
         const partes = item.data.split('/');
         if (partes.length === 3) document.getElementById('dataOp').value = `${partes[2]}-${partes[1]}-${partes[0]}`;
         document.getElementById('ativo').value = item.ticker;
@@ -235,7 +246,7 @@
         const pnl = op.direcao === 'VENDA' ? (valorBruto - op.premioFechamento) : (op.premioFechamento - valorBruto);
         const cor = pnl >= 0 ? '#34d399' : '#f87171';
         const sinal = pnl >= 0 ? '+' : '-';
-        return `<td style="color:${cor};font-weight:700;">${sinal}${formatarMoeda(Math.abs(pnl), 'USD')}</td>`;
+        return `<td style="color:${cor};font-weight:700;">${sinal}${formatarMoeda(Math.abs(pnl), op.moeda || 'USD')}</td>`;
     }
 
     // ===== CÉLULA DE EXPIRAÇÃO (SÓ OPÇÕES) =====
@@ -326,11 +337,11 @@
                     <td class="text-amber"><b>${op.ticker}</b></td>
                     <td><span class="badge ${badgeCls}">${badgeTxt}</span></td>
                     <td>${dirTxt}</td>
-                    <td>$${op.preco.toFixed(2)}</td>
+                    <td>${simboloMoeda(op.moeda)}${op.preco.toFixed(2)}</td>
                     <td>${op.qtdOriginal}</td>
-                    <td class="${corValor}">${sinal}${formatarMoeda(Math.abs(op.valorEfeito), 'USD')}</td>
+                    <td class="${corValor}">${sinal}${formatarMoeda(Math.abs(op.valorEfeito), op.moeda || 'USD')}</td>
                     <td style="color:${acoesPorAtivo[t]>0?'#fbbf24':'#64748b'};font-weight:600;">${acoesPorAtivo[t]}</td>
-                    <td class="text-green" style="font-weight:700;">$${pmExib.toFixed(3)}</td>
+                    <td class="text-green" style="font-weight:700;">${simboloMoeda(op.moeda)}${pmExib.toFixed(3)}</td>
                     ${gerarCelulaExercicio(op)}
                     ${gerarCelulaPnL(op)}
                     <td class="col-acao" style="text-align:center;white-space:nowrap;">
@@ -353,10 +364,11 @@
             const din = dineroPorAtivo[filtro] || 0;
             const acoes = acoesPorAtivo[filtro] || 0;
             const pm = acoes > 0 ? (din / acoes) : 0;
-            document.getElementById('resumoTotalAplicado').innerText = formatarMoeda(Math.max(0,din), 'USD');
+            const moedaAtivo = (agenda.find(i => i.ticker === filtro) || {}).moeda || 'USD';
+            document.getElementById('resumoTotalAplicado').innerText = formatarMoeda(Math.max(0,din), moedaAtivo);
             document.getElementById('resumoTotalAplicado').style.color = "#34d399";
             document.getElementById('resumoTotalAcoes').innerText = acoes;
-            document.getElementById('resumoPM').innerText = `$${pm.toFixed(3)}`;
+            document.getElementById('resumoPM').innerText = `${simboloMoeda(moedaAtivo)}${pm.toFixed(3)}`;
             document.getElementById('resumoPM').style.color = "#34d399";
         }
     }

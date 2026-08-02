@@ -116,6 +116,12 @@
         if (usdBrl && usdBrl.preco) taxasCambio.USDBRL = usdBrl.preco;
     }
 
+    function simboloMoeda(m) {
+        if (m === 'EUR') return '€';
+        if (m === 'BRL') return 'R$';
+        return '$';
+    }
+
     // Converte um valor de moedaOrigem ('USD'|'EUR') para a moeda atualmente
     // selecionada (moedaExibicao) e devolve já formatado com símbolo.
     // Se a taxa ainda não chegou (app acabou de abrir), cai para USD como fallback.
@@ -128,6 +134,7 @@
         // Passo A: origem -> USD
         let valorUSD = valor;
         if (moedaOrigem === 'EUR') valorUSD = semCambio ? valor : (valor * taxasCambio.EURUSD);
+        else if (moedaOrigem === 'BRL') valorUSD = semCambio ? valor : (valor / taxasCambio.USDBRL);
 
         // Passo B: USD -> destino
         let valorFinal = valorUSD;
