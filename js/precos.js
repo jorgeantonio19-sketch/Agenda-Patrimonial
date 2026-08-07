@@ -26,17 +26,25 @@
         // Nota: não contempla feriados do mercado dos EUA (Ação de Graças, Natal, etc.)
     }
 
+    // Controla, por ticker, qual foi o último pedido disparado — para que uma
+    // resposta lenta (ex: proxy público cacheado) que chegue DEPOIS de um pedido
+    // mais recente não sobrescreva o cache com um preço desatualizado.
+    let pedidoAtualPreco = {};
+
     async function buscarPrecoYahoo(ticker) {
         if (cachePrecos[ticker] && (Date.now() - cachePrecos[ticker].ts) < 60000) return cachePrecos[ticker];
-        
+
+        const meuPedido = Date.now();
+        pedidoAtualPreco[ticker] = meuPedido;
+
         const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=5d`;
         const fontes = [
             `/api/preco?symbol=${encodeURIComponent(ticker)}`, // servidor próprio (Vercel) — sem CORS, mais rápido/fiável
-            `https://corsproxy.io/?url=${encodeURIComponent(yahooUrl)}`,
-            `https://api.allorigins.win/raw?url=${encodeURIComponent(yahooUrl)}`,
+            `https://corsproxy.io/?url=${encodeURIComponent(yahooUrl)}&_=${meuPedido}`, // _= evita cache do proxy
+            `https://api.allorigins.win/raw?url=${encodeURIComponent(yahooUrl)}&_=${meuPedido}`,
             yahooUrl
         ];
-        
+
         for (const url of fontes) {
             try {
                 const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
@@ -44,6 +52,11 @@
                 const data = await res.json();
                 const result = data.chart && data.chart.result && data.chart.result[0];
                 if (!result) continue;
+
+                // Já chegou um pedido mais recente pra este ticker enquanto
+                // este estava a caminho: descarta esta resposta desatualizada.
+                if (pedidoAtualPreco[ticker] !== meuPedido) return cachePrecos[ticker] || null;
+
                 const meta = result.meta;
                 // Mercado aberto: regularMarketPrice; Fechado: previousClose ou chartPreviousClose
                 const preco = meta.regularMarketPrice || meta.previousClose || meta.chartPreviousClose;
@@ -68,15 +81,21 @@
         return `${pos.ticker}${aa}${mes}${dia}${pos.tipo}${strikeMil}`;
     }
 
+    // Mesma proteção contra race condition, aplicada aos preços de opções.
+    let pedidoAtualOpcao = {};
+
     async function buscarPrecoOpcaoYahoo(pos) {
         const occ = montarSimboloOCC(pos);
         if (cachePrecosOpcoes[occ] && (Date.now() - cachePrecosOpcoes[occ].ts) < 60000) return cachePrecosOpcoes[occ];
 
+        const meuPedido = Date.now();
+        pedidoAtualOpcao[occ] = meuPedido;
+
         const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${occ}?interval=1d&range=5d`;
         const fontes = [
             `/api/preco?symbol=${encodeURIComponent(occ)}`, // servidor próprio (Vercel) — sem CORS, mais rápido/fiável
-            `https://corsproxy.io/?url=${encodeURIComponent(yahooUrl)}`,
-            `https://api.allorigins.win/raw?url=${encodeURIComponent(yahooUrl)}`,
+            `https://corsproxy.io/?url=${encodeURIComponent(yahooUrl)}&_=${meuPedido}`,
+            `https://api.allorigins.win/raw?url=${encodeURIComponent(yahooUrl)}&_=${meuPedido}`,
             yahooUrl
         ];
 
@@ -87,6 +106,9 @@
                 const data = await res.json();
                 const result = data.chart && data.chart.result && data.chart.result[0];
                 if (!result) continue;
+
+                if (pedidoAtualOpcao[occ] !== meuPedido) return cachePrecosOpcoes[occ] || null;
+
                 const meta = result.meta;
                 const preco = meta.regularMarketPrice || meta.previousClose || meta.chartPreviousClose;
                 if (!preco && preco !== 0) continue;
