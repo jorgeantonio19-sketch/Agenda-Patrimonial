@@ -25,21 +25,39 @@
         let dados = [];
 
         if (modoPizza === 'quantidade') {
-            // Fatia pelo número de ações detidas em cada ticker; Renda Fixa entra como
-            // fatia única, dimensionada pelo capital investido (não tem "quantidade de ações").
+            // Fatia por ticker, somando ações detidas + equivalente de opções vendidas
+            // (cada contrato controla 100 ações — é o que dá a tickers só-opções, como
+            // a Ford, uma fatia própria em vez de sumirem do gráfico).
+            const porTicker = {};
             calcularAcoesDetidas().forEach(pos => {
-                if (pos.qtd > 0) dados.push({ nome: pos.ticker, valor: pos.qtd });
+                if (pos.qtd > 0) porTicker[pos.ticker] = (porTicker[pos.ticker] || 0) + pos.qtd;
+            });
+            POSICOES_CONSOLIDADAS.opcoesVendidas.forEach(pos => {
+                porTicker[pos.ticker] = (porTicker[pos.ticker] || 0) + (pos.contratos * 100);
+            });
+            Object.keys(porTicker).forEach(ticker => {
+                if (porTicker[ticker] > 0) dados.push({ nome: ticker, valor: porTicker[ticker] });
             });
             if (capitalRF > 0) dados.push({ nome: 'Renda Fixa', valor: capitalRF });
 
         } else if (modoPizza === 'dinheiro') {
-            // Fatia pelo valor de mercado atual (preço em cache × quantidade) + Renda Fixa (capital total)
+            // Fatia por ticker: valor de mercado das ações (preço em cache × quantidade)
+            // + valor retido nas opções vendidas desse mesmo ticker (já calculado em
+            // totais.js). Renda Fixa entra como fatia única separada.
+            const porTicker = {};
             calcularAcoesDetidas().forEach(pos => {
                 const dp = cachePrecos[pos.ticker];
                 if (dp && dp.preco) {
                     const valor = converterParaUSD(dp.preco * pos.qtd, pos.moeda || 'USD');
-                    if (valor > 0) dados.push({ nome: pos.ticker, valor });
+                    if (valor > 0) porTicker[pos.ticker] = (porTicker[pos.ticker] || 0) + valor;
                 }
+            });
+            Object.keys(ultimoValorRetidoPorTicker || {}).forEach(ticker => {
+                const valor = ultimoValorRetidoPorTicker[ticker];
+                if (valor) porTicker[ticker] = (porTicker[ticker] || 0) + valor;
+            });
+            Object.keys(porTicker).forEach(ticker => {
+                if (porTicker[ticker] > 0) dados.push({ nome: ticker, valor: porTicker[ticker] });
             });
             if (capitalRF > 0) dados.push({ nome: 'Renda Fixa', valor: capitalRF });
 

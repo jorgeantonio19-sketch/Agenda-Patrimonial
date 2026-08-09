@@ -32,3 +32,10 @@
             { ticker: 'F',    strike: 13.5, tipo: 'P', vencimento: '2026-08-14', contratos: 2 }
         ]
     };
+
+    // ===== VALOR RETIDO EM OPÇÕES, AGRUPADO POR TICKER =====
+    // Preenchido por calcularTotaisConsolidados() (totais.js) sempre que os preços
+    // das opções são atualizados. Usado pelo gráfico de pizza (grafico.js) para dar
+    // a cada ativo — incluindo os que só têm opções, como a Ford — a sua própria
+    // fatia, em vez de tudo cair num bloco genérico "Opções".
+    let ultimoValorRetidoPorTicker = {};

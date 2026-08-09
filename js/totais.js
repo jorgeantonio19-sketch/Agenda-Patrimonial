@@ -106,11 +106,14 @@
 
         // Valor Retido (Opções): preço atual de recompra x contratos x 100
         let valorRetido = 0;
+        let valorRetidoPorTicker = {};
         let falhaOpcao = false;
         POSICOES_CONSOLIDADAS.opcoesVendidas.forEach((pos, i) => {
             const dados = resultadosOpcoes[i];
             if (dados && dados.preco !== null && dados.preco !== undefined) {
-                valorRetido += dados.preco * pos.contratos * 100;
+                const valor = dados.preco * pos.contratos * 100;
+                valorRetido += valor;
+                valorRetidoPorTicker[pos.ticker] = (valorRetidoPorTicker[pos.ticker] || 0) + valor;
             } else falhaOpcao = true;
         });
 
@@ -129,6 +132,7 @@
 
         ultimoValorAplicado = valorAplicado;
         ultimoValorRetido = valorRetido;
+        ultimoValorRetidoPorTicker = valorRetidoPorTicker;
         if (typeof atualizarCategoriasCarteira === 'function') atualizarCategoriasCarteira();
     }
 
