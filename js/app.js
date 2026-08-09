@@ -44,6 +44,16 @@
 
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+
+        // NOVO: quando o sw.js instala uma versão nova (CACHE_NAME mudou) e assume
+        // o controlo da página, ele avisa por postMessage — aqui recarregamos
+        // sozinhos em vez de obrigar a fechar e reabrir a app 2 vezes para ver
+        // os ficheiros JS atualizados.
+        navigator.serviceWorker.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'SW_ATUALIZADO') {
+                window.location.reload();
+            }
+        });
     }
 
     carregarNomeProprietario();
