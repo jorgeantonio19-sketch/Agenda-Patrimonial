@@ -1,4 +1,4 @@
-const CACHE_NAME = 'agenda-patrimonial-v17';
+const CACHE_NAME = 'agenda-patrimonial-v18';
 const ASSETS = [
   './',
   './index.html',
@@ -49,6 +49,16 @@ self.addEventListener('activate', (e) => {
         })
       );
     }).then(() => self.clients.claim())
+     .then(() => {
+       // NOVO: assim que este SW passa a controlar as páginas já abertas,
+       // avisa cada uma delas para recarregar sozinha. Sem isto, no iOS
+       // era preciso fechar e reabrir a app 2 vezes pra ver a atualização
+       // — a página antiga continuava viva, só controlada pelo SW novo,
+       // mas sem os ficheiros JS novos em memória até um refresh.
+       return self.clients.matchAll({ type: 'window' }).then((clients) => {
+         clients.forEach((client) => client.postMessage({ type: 'SW_ATUALIZADO' }));
+       });
+     })
   );
 });
 
