@@ -1,4 +1,4 @@
-const CACHE_NAME = 'agenda-patrimonial-v18';
+const CACHE_NAME = 'agenda-patrimonial-v19';
 const ASSETS = [
   './',
   './index.html',
@@ -63,9 +63,18 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  // Só intercetar pedidos GET do mesmo domínio (evita interferir com
-  // chamadas à API da Yahoo/proxies, que devem ir sempre à rede).
-  if (e.request.method !== 'GET' || new URL(e.request.url).origin !== self.location.origin) {
+  const url = new URL(e.request.url);
+
+  // Só intercetar pedidos GET do mesmo domínio, e NUNCA cachear chamadas
+  // à nossa própria API (/api/preco etc.) — essas têm de ir sempre à rede
+  // para trazer cotações atualizadas. Sem esta exclusão, a URL relativa
+  // /api/preco?symbol=PETR4.SA era tratada como "mesmo domínio" e ficava
+  // presa no cache-first, servindo o mesmo preço antigo para sempre.
+  if (
+    e.request.method !== 'GET' ||
+    url.origin !== self.location.origin ||
+    url.pathname.startsWith('/api/')
+  ) {
     return;
   }
 
